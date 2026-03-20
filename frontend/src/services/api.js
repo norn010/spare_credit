@@ -45,5 +45,10 @@ export async function createDebtClearingBatch(payload) {
   return data;
 }
 
+export async function fetchReconcileBatches(params) {
+  const { data } = await api.get('/reconcile-batches', { params });
+  return data;
+}
+
 export default api;
 

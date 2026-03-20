@@ -48,19 +48,6 @@ function getAccountOptions(databaseName, branch) {
   };
 }
 
-function parseAccountValue(value) {
-  const raw = (value || '').trim();
-  if (!raw) return { code: null, name: null };
-  const parts = raw.split('|');
-  if (parts.length >= 2) {
-    return {
-      code: parts[0].trim() || null,
-      name: parts.slice(1).join('|').trim() || null,
-    };
-  }
-  return { code: raw, name: null };
-}
-
 function AutomateCompleted() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -279,24 +266,11 @@ function AutomateCompleted() {
       setError('กรุณาเลือกข้อมูลที่เป็น Database และสาขาเดียวกันก่อนสร้างรายการตัดชำระ');
       return;
     }
-    const bank = parseAccountValue(batchForm.bank_account);
-    const ar = parseAccountValue(batchForm.ar_account);
-    const feeAccount = parseAccountValue(batchForm.fee_account);
-    const diff = parseAccountValue(batchForm.diff_account);
-
     const payload = {
       database_name: first.database_name,
       branch: first['สาขา'] ?? '',
       รหัสลูกค้า: first['รหัสลูกค้า'] ?? null,
       rs_docno: batchForm.rs_docno.trim(),
-      bank_account: bank.code,
-      bank_account_name: bank.name,
-      ar_account: ar.code,
-      ar_account_name: ar.name,
-      fee_account: feeAccount.code,
-      fee_account_name: feeAccount.name,
-      diff_account: diff.code,
-      diff_account_name: diff.name,
       fee: batchForm.fee === '' ? null : Number(batchForm.fee),
       diff_debit: batchForm.diff_debit === '' ? null : Number(batchForm.diff_debit),
       diff_credit: batchForm.diff_credit === '' ? null : Number(batchForm.diff_credit),
@@ -326,7 +300,7 @@ function AutomateCompleted() {
     <div className="flex flex-col flex-1 min-h-0 gap-4">
       <header className="shrink-0 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">รายงานตัดชำระหนี้ อะไหล่เงินเชื่อ</h1>
+          <h1 className="text-xl font-semibold text-slate-900">รายงานตัดชำระหนี้ อะไหล่ต้นทุนเงินเชื่อ</h1>
           <p className="text-sm text-slate-500">
             Review completed automation records and capture reconciliation details.
           </p>
@@ -606,50 +580,6 @@ function AutomateCompleted() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-600 mb-1">บัญชีธนาคาร</label>
-                <input
-                  type="text"
-                  list="bank-account-options"
-                  value={batchForm.bank_account}
-                  onChange={(e) => handleBatchFormChange('bank_account', e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="เลือกหรือพิมพ์เอง"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-slate-600 mb-1">ลูกหนี้การค้า (รวมสุทธิ)</label>
-                <input
-                  type="text"
-                  list="ar-account-options"
-                  value={batchForm.ar_account}
-                  onChange={(e) => handleBatchFormChange('ar_account', e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="เลือกหรือพิมพ์เอง"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-slate-600 mb-1">ค่าธรรมเนียม (ผังบัญชี)</label>
-                <input
-                  type="text"
-                  list="fee-account-options"
-                  value={batchForm.fee_account}
-                  onChange={(e) => handleBatchFormChange('fee_account', e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="เลือกหรือพิมพ์เอง"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-slate-600 mb-1">ส่วนต่างเดบิต/เครดิต (ผังบัญชี)</label>
-                <input
-                  type="text"
-                  list="diff-account-options"
-                  value={batchForm.diff_account}
-                  onChange={(e) => handleBatchFormChange('diff_account', e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="เลือกหรือพิมพ์เอง"
-                />
-              </div>
-              <div>
                 <label className="block text-xs font-medium text-slate-600 mb-1">หักค่าธรรมเนียม</label>
                 <input
                   type="number"
@@ -705,26 +635,6 @@ function AutomateCompleted() {
                 {batchSubmitting ? 'กำลังสร้าง...' : 'Create Batch'}
               </button>
             </div>
-            <datalist id="bank-account-options">
-              {accountOptions.bank_account.map((item) => (
-                <option key={item} value={item} />
-              ))}
-            </datalist>
-            <datalist id="ar-account-options">
-              {accountOptions.ar_account.map((item) => (
-                <option key={item} value={item} />
-              ))}
-            </datalist>
-            <datalist id="fee-account-options">
-              {accountOptions.fee_account.map((item) => (
-                <option key={item} value={item} />
-              ))}
-            </datalist>
-            <datalist id="diff-account-options">
-              {accountOptions.diff_account.map((item) => (
-                <option key={item} value={item} />
-              ))}
-            </datalist>
           </div>
         </div>
       )}

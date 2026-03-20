@@ -3,13 +3,14 @@ import Dashboard from './pages/Dashboard';
 import AutomateStatus from './pages/AutomateStatus';
 import AutomateCompleted from './pages/AutomateCompleted';
 import BPReport from './pages/BPReport';
+import AutomationReconcileReport from './pages/AutomationReconcileReport';
 
 function App() {
   return (
     <div className="h-screen flex bg-slate-100 overflow-hidden">
       <aside className="w-64 shrink-0 bg-slate-900 text-slate-100 flex flex-col">
         <div className="px-6 py-4 border-b border-slate-800">
-          <h1 className="text-lg font-semibold tracking-tight">Dashboard อะไหล่เงินเชื่อ</h1>
+          <h1 className="text-lg font-semibold tracking-tight">Dashboard อะไหล่ต้นทุนเงินเชื่อ</h1>
           <p className="text-xs text-slate-400 mt-1">Monitor and automate credit returns</p>
         </div>
         <nav className="flex-1 px-3 py-4 space-y-1">
@@ -42,7 +43,9 @@ function App() {
               }`
             }
           >
-            รายงานตัดชำระหนี้ อะไหล่เงินเชื่อ
+            รายงานตัดชำระหนี้ 
+            <br />
+            อะไหล่ต้นทุนเงินเชื่อ
           </NavLink>
           <NavLink
             to="/bp-report"
@@ -53,6 +56,16 @@ function App() {
             }
           >
             BPรายงานตัดชำระหนี้
+          </NavLink>
+          <NavLink
+            to="/automation-reconcile-report"
+            className={({ isActive }) =>
+              `flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                isActive ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800/60'
+              }`
+            }
+          >
+            Automation รายงานตัดชำระหนี้
           </NavLink>
         </nav>
         <div className="px-4 py-3 border-t border-slate-800 text-xs text-slate-500">
@@ -66,6 +79,10 @@ function App() {
           <Route path="/automate-status" element={<AutomateStatus />} />
           <Route path="/automate-completed" element={<AutomateCompleted />} />
           <Route path="/bp-report" element={<BPReport />} />
+          <Route
+            path="/automation-reconcile-report"
+            element={<AutomationReconcileReport />}
+          />
         </Routes>
       </main>
     </div>
